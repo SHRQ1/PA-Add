@@ -8,9 +8,9 @@ import getpass
 
 
 
-
+# Change it
 server_ip='192.168.1.1'
-username='admin' # Change it to your username
+username='admin'
 Tag='Test'
 
 ipAddr = []
@@ -68,11 +68,11 @@ def add(input_desc,pswd):
         print("Invalid credential")
         exit(1)
 
-    print("\nThe script found the following FDQN :\n")
+    print("\nThe script found the following FDQN ("+len(FDQN)+" ):\n")
     for x in FDQN:
         print(x)
 
-    print("The script found the following Ip addresses :\n ")
+    print("The script found the following Ip addresses ("+len(ipAddr)+"):\n ")
     for x in ipAddr:
         print(x)
 
@@ -87,7 +87,7 @@ def add(input_desc,pswd):
 
     for x in ipAddr:
         try:
-            obj = AddressObject(x, x + '/32', 'ip-netmask', input_desc, Tag)
+            obj = AddressObject(x, x, 'ip-netmask', input_desc, Tag)
             fw.add(obj)
             obj.create()
         except:
