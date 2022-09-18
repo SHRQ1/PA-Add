@@ -12,7 +12,7 @@ Change both lines 12 & 13 in *pa-add.py* to your Ip server and your username and
 Be in the same directory of PA-Add and run the follwing command.
 
 ```bash
-python pa-add.py "Path of Addreses.txt" "Descreption"
+python pa-add.py "Path of Addreses.txt" "Descreption" -G "group name"
 ```
 
 ## Contact Us
