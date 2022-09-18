@@ -6,7 +6,7 @@ This code Adds addresses to the Palo Alto firewall from *.txt* file
 
 
 ## Usage
-Change both lines 12 & 13 in *pa-add.py* to your Ip server and your username and save the file.
+Change both lines 12 & 13 in *pa-add.py* to your Ip server , your username and tag then save the file.
 
 ### Run
 Be in the same directory of PA-Add and run the follwing command.
