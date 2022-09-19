@@ -25,8 +25,6 @@ def classify(file_path):
     f.close()
 
 
-
-
     Ip_pattern = re.compile(r'(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})')
     FDQN_pattern = re.compile(r"^([a-zA-Z0-9._-]+$)")
 
@@ -62,14 +60,7 @@ def parseFQDN(url):
 
 
 
-def add(input_desc,pswd,fw):
-   # fw = Firewall(server_ip, username, pswd)
-
-    try:
-        fw.show_system_info()
-    except:
-        print("Invalid credential")
-        exit(1)
+def add(input_desc,fw):
 
     print("\n found the following FDQN ("+str(len(FDQN))+"):\n")
     for x in FDQN:
@@ -100,33 +91,25 @@ def add(input_desc,pswd,fw):
             print("Something went wrong with " + x)
 
 
-    #fw.commit()
-
 def addGroup(grp_name,fw):
-    fw = Firewall(server_ip, username, pswd)
+
+    grp = AddressGroup(grp_name, address_objects, )
+    fw.add(grp)
+    grp.create()
+    print("\nAdded to "+grp_name)
+
+
+def main(file_path, input_desc,grp_name):
+    pswd =getpass.getpass('Password:')
+    fw= Firewall(server_ip, username, pswd)
     try:
         fw.show_system_info()
     except:
         print("Invalid credential")
         exit(1)
-    #grp=AddressGroup("Group1")
 
-
-    grp = AddressGroup(grp_name, address_objects)
-    fw.add(grp)
-
-       # grp = AddressGroup("Group1",objlist,description='desc',tag='Test')
-    #address_objects[0].create_similar()
-    grp.create()
-    print("\nAdded to "+grp_name)
-
-   # fw.commit()
-
-
-def main(file_path, input_desc,pswd,grp_name):
-    fw= Firewall(server_ip, username, pswd)
     classify(file_path)
-    add(input_desc,pswd,fw)
+    add(input_desc,fw)
     if not grp_name == None:
         addGroup(grp_name,fw)
     print("Wait to commit")
@@ -137,7 +120,6 @@ def main(file_path, input_desc,pswd,grp_name):
 
 
 if __name__ == '__main__':
-    pswd =getpass.getpass('Password:')
     parser = argparse.ArgumentParser()
     parser.add_argument('file', type=str, help=" file path")
     parser.add_argument("Description", type=str, help="description ")
@@ -148,6 +130,6 @@ if __name__ == '__main__':
     input_desc = args.Description
     grp_name=args.group
 
-    main(file_path, input_desc,pswd,grp_name)
+    main(file_path, input_desc,grp_name)
 
 
