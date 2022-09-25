@@ -5,8 +5,7 @@ import re
 from urllib.parse import urlparse
 import argparse
 import getpass
-
-
+from xml.etree import ElementTree
 
 
 # Change it
@@ -71,8 +70,13 @@ def add(input_desc,fw):
         print(x)
 
     ################## Adding start here
+    AddressObject.refreshall(fw,add=True)
 
     for x in FDQN:
+        if not fw.find(x,AddressObject)== None:
+            print(x+' Already has been added before')
+            address_objects.append(fw.find(x,AddressObject))
+            continue
         try:
             obj = AddressObject(x, x, 'fqdn', input_desc, tag)
             fw.add(obj)
@@ -80,28 +84,41 @@ def add(input_desc,fw):
             address_objects.append(obj)
         except:
             print("Something went wrong with "+x)
-
     for x in ipAddr:
+
+        if not fw.find(x, AddressObject)== None:
+            print(x + ' Already has been added before')
+            address_objects.append(fw.find(x,AddressObject))
+            continue
         try:
-            obj = AddressObject(x, x,'ip-netmask' ,input_desc, tag)
-            fw.add(obj)
-            obj.create()
-            address_objects.append(obj)
+           obj = AddressObject(x, x,'ip-netmask' ,input_desc, tag)
+           fw.add(obj)
+           obj.create()
+           address_objects.append(obj)
         except:
             print("Something went wrong with " + x)
 
 
+
 def addGroup(grp_name,fw):
 
-    grp = AddressGroup(grp_name, address_objects, )
-    fw.add(grp)
-    grp.create()
+    AddressGroup.refreshall(fw,add=True)
+    grp=fw.find(grp_name)
+    if grp==None:
+         print("Create a group with name: "+grp_name)
+         grp = AddressGroup(grp_name,address_objects)
+         fw.add(grp)
+         grp.create()
+    else:
+        print("Group already have been created")
+        grp.extend(address_objects)
+
     print("\nAdded to "+grp_name)
 
 
 def main(file_path, input_desc,grp_name):
     pswd =getpass.getpass('Password:')
-    fw= Firewall(server_ip, username, pswd)
+    fw= Firewall(server_ip, username, pswd, is_virtual=True)
     try:
         fw.show_system_info()
     except:
@@ -111,7 +128,11 @@ def main(file_path, input_desc,grp_name):
     classify(file_path)
     add(input_desc,fw)
     if not grp_name == None:
-        addGroup(grp_name,fw)
+         addGroup(grp_name,fw)
+
+
+
+
     print("Wait to commit")
     fw.commit()
     print("\nDone")
@@ -131,5 +152,6 @@ if __name__ == '__main__':
     grp_name=args.group
 
     main(file_path, input_desc,grp_name)
+
 
 
